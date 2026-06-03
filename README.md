@@ -133,6 +133,20 @@ J --> K[Vehicle stability output]
 
 E -. interaction .-> L[ABS mu split control module triggered]
 ```
+
+<table>
+  <tr>
+    <td align="center">
+      <b>Main Straight </b><br>
+      <img src="YRC_Flag_Activation.png" width="800"/>
+    </td>
+    <td align="center">
+      <b>Corners </b><br>
+      <img src="YRC_Working.png" width="800"/>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ⚙️ **6. Rollover Stability Program (RSP)**
