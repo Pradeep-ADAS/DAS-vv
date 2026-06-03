@@ -200,3 +200,32 @@ P -->|Yes| R[Apply μ-Split corrected pressures]
 R --> S[Wheel brake actuation]
 
 Q --> S
+```
+---
+🧪 **8. Verification & Validation (V&V) Framework**
+
+This project includes an automated Verification & Validation (V&V) framework for Driver Assistance Systems (DAS) developed within a MATLAB/Simulink and IPG TruckMaker co-simulation environment. The framework enables scenario-based validation of control functions under a wide range of driving and road conditions.
+
+A configurable MATLAB-based interface allows users to select test vehicles, define simulation scenarios, and tune controller parameters. The same test case can be executed for a single vehicle setup or used for comparative evaluation between two configurations.
+
+More than 150 test scenarios are executed in batch mode, covering diverse operational conditions including varying friction levels, road geometries, and driving maneuvers. Key performance metrics such as vehicle stability, yaw response, braking performance, and trajectory tracking are computed automatically, along with visualization of vehicle paths and system responses.
+
+The entire test suite is executed in an automated workflow, generating structured simulation outputs and a consolidated validation report. On average, a full batch simulation requires approximately 8 hours on a high-performance multi-core simulation workstation running MATLAB–TruckMaker co-simulation.
+
+---
+
+🧭 **9. Test Scenario Library**
+
+The V&V framework includes a structured set of standardized driving maneuvers designed to evaluate ABS and ESP performance under diverse friction and dynamic conditions. These scenarios are executed in batch mode within the MATLAB–TruckMaker co-simulation environment. Some example scenarios are listed below.
+
+🛑 ABS Test Scenarios
+- ABS braking on straight road with split-μ (left side or roght side low friction)
+- ABS braking in left curve (100 m radius) with split-μ (left side or right side low friction)
+- ABS braking on downhill gradient with split-μ conditions
+- ABS braking on low-μ chessboard surface
+
+🚗 ESP Test Scenarios
+- Constant-radius circular driving on split-μ surface (45 m radius)
+- J-turn maneuver with induced oversteer conditions (vehicle stability limits)
+
+Many more custom maneuevers were created for V&V of all controls developed/ optized/ debugged as part of this project. In total this adds upto 150+ unique maneuvers. 
