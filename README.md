@@ -53,9 +53,16 @@ The TCS is structured into three core control functions within the vehicle dynam
 - Individual wheel brake pressure (selective braking)  
 - Engine torque increase request (drag torque compensation)  
 
-**Function**
+**Function** <br>
 Prevents wheel slip and instability during low-μ or split-μ driving conditions by coordinating engine torque and brake interventions. Compares wheel speed differentials across axles to detect slip, then applies engine torque limitation, selective wheel braking (active up to ~40 km/h), or drag torque compensation during downshifts to maintain traction and vehicle stability.
+
+A simplified architecture diagram of the TCS implementation is shown below.
+
+<p align="center">
+  <img src="TCS_Structure.png" width="600"/>
+</p>
 
 ---
 
+⚙️ **5. Electronic Stability Program (ESP)**
 
