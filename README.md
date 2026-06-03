@@ -58,9 +58,22 @@ Prevents wheel slip and instability during low-μ or split-μ driving conditions
 
 A simplified architecture diagram of the TCS implementation is shown below.
 
-<p align="center">
-  <img src="TCS_Structure.png" width="600"/>
-</p>
+```mermaid
+flowchart LR
+
+A[Bus Generator] --> C[Signal Sorting]
+B[Basic Driving Resistance] --> C
+
+C --> D[Vehicle Speed Calculation and Low Mu Side Detection]
+
+D --> E[Brake Control]
+D --> F[Engine Control]
+D --> G[Drag Torque Control]
+
+E --> E1[p_dem_TCS]
+F --> F1[lim_M_Engine]
+G --> G1[M_targ_Engine]
+```
 
 ---
 
@@ -80,7 +93,7 @@ Prepares and structures all vehicle, sensor, and simulation inputs into dedicate
 
 ---
 
-⚙️ **6. Yaw Rate Controller (YRC)**
+⚙️ **7. Yaw Rate Controller (YRC)**
 
 The Yaw Rate Controller (YRC) is a vehicle stability function that detects deviations between driver-demanded and actual yaw behavior and intervenes through engine torque reduction, selective braking, and slip control. Its activation is governed by dynamic tolerance bands that account for vehicle speed, μ-split conditions, and road banking to ensure stable yet non-intrusive control intervention.
 
@@ -119,3 +132,71 @@ J --> J4[Trailer brake coordination]
 J --> K[Vehicle stability output]
 
 E -. interaction .-> L[ABS mu split control module triggered]
+```
+---
+
+⚙️ **6. Rollover Stability Program (RSP)**
+
+**Input**
+- Measured lateral acceleration (from sensors and reference model)
+- Steering-wheel-based theoretical lateral acceleration
+- Vehicle geometry and CG height
+- Critical rollover threshold (static + dynamic)
+- Vehicle state signals (yaw rate, speed)
+
+**Output**
+- Engine torque reduction request (via APP override)
+- Global brake pressure demand (all wheels)
+- Target deceleration request
+- Wheel slip targets
+
+**Function**
+Estimates rollover risk by comparing effective lateral acceleration against a critical tipping threshold derived from vehicle dynamics and load conditions. The ratio is used to generate a graded rollover risk index (0–1), which triggers progressive intervention from pre-emptive torque reduction to full braking via the EBS interface. The system applies coordinated braking across all axles to stabilize the vehicle before rollover occurs.
+
+---
+
+⚙️ **7. Anti-Lock Braking System (ABS)**
+The ABS μ-Split architecture is designed to detect and mitigate braking instability caused by differing road friction levels between the left and right sides of the vehicle. It combines pressure-based split detection with cornering state estimation to reliably distinguish true μ-split conditions from normal curved-road braking, and then applies a structured correction strategy through selective brake pressure arbitration and wheel-level actuation.
+
+μ-Split Detection & Control - Architecture overview 
+
+```mermaid
+flowchart TD
+
+A[Wheel pressure signals] --> B[μ-Split Detection]
+
+B --> C{Delta pressure on fronnt axle above static threshold - HARD TRIGGER}
+B --> D[Cornering detection using wheel acceleration]
+
+C --> E[Split flag ACTIVE]
+
+D --> F{Cornering detected}
+
+F -->|Yes| G[Critical curve logic]
+F -->|No| H[Straight road split detection]
+
+G --> E
+H --> E
+
+E --> I[μ-Split Correction Controller]
+
+I --> J{Low mu side detection block}
+
+J -->|Right side low mu| K[Upper correction path]
+J -->|Left side low mu| L[Lower correction path]
+
+K --> M[High mu wheel pressure correction]
+L --> M
+
+M --> N[Modified pressure high mu wheel]
+
+N --> O[Wheel Brake Pressure Supervisor]
+
+O --> P{Split flag ACTIVE}
+
+P -->|No| Q[Normal ABS controller pass through]
+P -->|Yes| R[Apply μ-Split corrected pressures]
+
+R --> S[Wheel brake actuation]
+
+Q --> S
